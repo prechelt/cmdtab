@@ -1372,13 +1372,17 @@ static LRESULT CALLBACK KeyboardHookProcedure(int code, WPARAM wparam, LPARAM lp
 
 		if (mod1Up || mod2Up) {
 			// Alt keyup - switch to selected window
-			// Always pass/never consume mod key up, because:
-			// 1) cmdtab never hooks mod keydowns
-			// 2) cmdtab hooks mod keyups, but always passes it through on pain of getting a stuck Alt key because of point 1
+			// Synthesize Alt-up to unstick the key BEFORE switching windows
+			INPUT input = {0};
+			input.type = INPUT_KEYBOARD;
+			input.ki.wVk = keyCode;  // VK_MENU/VK_LMENU/VK_RMENU
+			input.ki.dwFlags = KEYEVENTF_KEYUP;
+			SendInput(1, &input, sizeof(INPUT));
+
 			ReceiveLastInputEvent();
 			ShowWindowX(*SelectedWindow);
 			CancelSwitcher(false);
-			goto passMessage; // See note above on "Alt keyup" on why I don't consume this message
+			goto consumeMessage;
 		} else {
 
 			bool keyRepeat = SetKey(keyCode, keyDown); // Manually track key repeat
