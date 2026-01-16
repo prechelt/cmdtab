@@ -76,6 +76,10 @@ These instructions require `git`, `cmake`, and *Visual Studio* or *MSBuild*.
 
 ## Release history
 
+#### 1.6.1 (2025-10-02)
+
+- `KeyboardHookProcedure`: fix: activated window no longer receives an AltUp key event
+
 #### 1.6.0 (2025-09-26)
 
 - `showAllWindows` setting: show windows (not apps) at the top level
